@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="author" content="kkchengaf (John)">
+    <meta name="description" content="Playing multiple YouTube videos in same page, with live chat">
+    <style>
+        body {
+            background-color: white;
+            transition: background-color 1s linear;
+        }
+        body.darktheme {
+           background-color: #282c34;
+        }
+        textarea {
+            margin-left: 20px;
+            padding: 20px 8px 20px 10px;
+            border-radius: 25px;
+            border:none;
+            outline: none;
+            box-shadow: 0 0 4px #9292ac;
+            width: 820px;
+            height: 180px;
+            background-color: powderblue;
+            color: #282ae5;
+            visibility: visible;
+            opacity: : 1;
+            transition: color 1.3s, background-color 1.3s,
+                        box-shadow 0.3s,
+                        visibility 0.5s, opacity 0.5s linear;
+         }
+         textarea::placeholder {
+           color: #282ae5;
+           opacity: 0.7;
+         }
+         textarea.darktheme {
+           background-color: #3d3f5a;
+           color: #99dafe;
+         }
+         textarea.darktheme::placeholder {
+           color: #99dafe;
+           opacity: 0.4;
+         }
+         textarea.hide {
+           visibility: hidden;
+           opacity: 0;
+         }
+
+        textarea:hover {
+             box-shadow: 0 0 15px #8290bb;
+         }
+
+        textarea:focus {
+            box-shadow: 0 0 30px #929ee4;
+        }
+
+        textarea::selection  {
+            background: #b3b6b5;
+        }
+        .slider {
+            -webkit-appearance: none;
+            margin-bottom: 10px;
+            border-radius: 25px;
+            width: 200px;
+            height: 100%;
+            background: #c3def8;
+            outline: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+        .slider:hover {
+            opacity: 1;
+        }
+        .slider:active {
+            opacity: 0.5;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 25px;
+            height: 25px;
+            opacity: 1;
+            background: #fb8c64;
+            cursor: pointer;
+        }
+
+
+    </style>
+  </head>
+
+  <body id="body" onload="ReloadURLs();">
+    <div id="videoarea" style="flex-wrap: wrap;display:flex;">
+    </div>
+    <br>
+    <textarea id="urls" rows="5" cols="50"  style="font-size:30px" oninput="parse()"
+              placeholder="Paste Youtube Video Links here&#10;https://www.youtube.com/watch?v=..."></textarea>
+    <div id="sliderarea"> </div>
+    <script >
+      var videoids = [];    //a list of vid
+      var containers = [];  // a list of object, (vid, player, hid)
+      var uid = 0;
+      var muted = false;
+      var played = false;
+      var sliderShowed = false;
+      var chatShowed = false;
+      var aspectRatioLocked = true
+      var lastHeight = 450;
+      var lastWidth = 625
+      var videoarea = document.getElementById("videoarea")
+      var spliderarea = document.getElementById("sliderarea")
+      var selectedPlayer = null;
+      var selectedPlayerHTML = null;
+      function parse() {
+          var urls = document.getElementById("urls").value.split("\n");
+          urls = urls.map(url=> (url.split("&")[0]))  //remove all tags after vid
+          urls = urls.filter((v,i, arr)=> arr.findIndex((v2) => v2===v)===i)
+          document.getElementById("urls").value = urls.join("\n")
+          localStorage.setItem("urls", document.getElementById("urls").value)
+          videoids = urls.map(url=> (url.split("v=")[1]))
+          videoids = videoids.filter(url => url != null)
+          onYouTubeIframeAPIReady()
+      }
+
+
+      function getPlayer(uid_t) {
+          for(var tup of containers) {
+              if (tup.uid == uid_t) {
+                  return tup.ply;
+              }
+          }
+          return null
+      }
+
+
+      function search_videoids(vid, start) {
+          while (start < videoids.length) {
+              if (videoids[start] === vid)
+                    return start
+              start++;
+          }
+          return -1
+      }
+
+      function add_slider(uid_t, pos) {
+          slid_div = document.createElement('div');
+          h_slid_html = document.createElement('input');
+          h_slid_html.setAttribute("min", "200")
+          h_slid_html.setAttribute("type", "range");
+          h_slid_html.setAttribute("class", "slider")
+          if (sliderShowed)
+            h_slid_html.style.display = "block"
+          else
+            h_slid_html.style.display = "none"
+          w_slid_html = h_slid_html.cloneNode()
+          w_slid_html.setAttribute("max", "1885")
+          w_slid_html.setAttribute("value", "625")
+          w_slid_html.setAttribute("id", "w_slider" + uid_t)
+          h_slid_html.setAttribute("max", "948")
+          h_slid_html.setAttribute("value", "450")
+          h_slid_html.setAttribute("id", "h_slider" + uid_t)
+          h_slid_html.setAttribute("oninput", "setHeight(this)");
+          w_slid_html.setAttribute("oninput", "setWidth(this)");
+          h_slid_html.setAttribute("onmouseover", "setSelectedPlayer(this.id)");
+          w_slid_html.setAttribute("onmouseover", "setSelectedPlayer(this.id)");
+          slid_div.appendChild(w_slid_html)
+          slid_div.appendChild(h_slid_html)
+          return slid_div
+      }
+
+      function add_player(vid, pos) {
+          sec_html = document.createElement('div');
+          sec_html.id = "sec_" + uid;
+          sec_html.setAttribute("style", "flex-wrap: wrap;display:flex;")
+          vid_html = document.createElement('div');
+          vid_html.id = 'player' + uid;
+          chat_html = document.createElement("iframe");
+          chat_html.referrerPolicy = "origin";
+          chat_html.src = "https://www.youtube.com/live_chat?v=" + vid + "&embed_domain=kkchengaf.github.io"
+          chat_html.frameBorder = "0";
+          chat_html.setAttribute("class", "livechatiframe")
+          if (chatShowed)
+            chat_html.style.display = "block"
+          else
+            chat_html.style.display = "none"
+          chat_html.id = "chat" + uid;
+          sec_html.appendChild(vid_html)
+          sec_html.appendChild(chat_html)
+
+          top_sec_html = document.createElement('div');
+          top_sec_html.id = "sec" + uid
+          top_sec_html.appendChild(sec_html)
+          slid_html = add_slider(uid, pos)
+          top_sec_html.appendChild(slid_html)
+
+          if (videoarea.children.length > 0 && pos != -1)
+              videoarea.insertBefore(top_sec_html, videoarea.children[pos]);
+          else
+              videoarea.appendChild(top_sec_html);
+
+          player = new YT.Player(vid_html.id, {
+                  height: '450',
+                  width: '625',
+                  videoId: vid
+                  });
+          return {vid:vid, ply:player, uid:uid++}
+      }
+
+      // 2. This code loads the IFrame Player API code asynchronously.
+      var tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      // 3. This function creates an <iframe> (and YouTube player)
+      //    after the API code downloads.
+      function onYouTubeIframeAPIReady() {
+          vid_ptr = 0;
+          con_ptr = 0;
+          while(vid_ptr < videoids.length || con_ptr < containers.length) {
+              if (con_ptr == containers.length) {
+                  tup = add_player(videoids[vid_ptr], -1);
+                  containers.push(tup);
+                  con_ptr++;
+                  vid_ptr++;
+                  continue;
+              }
+              found = search_videoids(containers[con_ptr].vid, vid_ptr);
+              if (found == -1) {
+                  uid_t = containers[con_ptr].uid;
+                  sec_id = "sec" + uid_t
+                  sec_html = document.getElementById(sec_id);
+                  sec_html.parentNode.removeChild(sec_html);
+                  containers.splice(con_ptr, 1);
+              } else {
+                  while(vid_ptr < found){
+                      tup = add_player(videoids[vid_ptr], con_ptr);
+                      containers.splice(con_ptr, 0, tup);
+                      con_ptr++;
+                      vid_ptr++;
+                  }
+                  con_ptr++
+                  vid_ptr++
+              }
+          }
+        }
+
+        function toggle_mute_all() {
+            containers.forEach((item, i) => {
+                if (muted)
+                  item.ply.unMute()
+                else
+                  item.ply.mute()
+            });
+            muted = !muted;
+        }
+
+        function toggle_play_all() {
+            containers.forEach((item, i) => {
+                if (played)
+                  item.ply.pauseVideo()
+                else
+                  item.ply.playVideo()
+            });
+            played = !played;
+        }
+
+        function toggle_url_area() {
+            u = document.getElementById("urls")
+            u.classList.toggle('hide')
+        }
+
+        function toggle_dark_theme() {
+            var body = document.getElementById("body")
+            var text = document.getElementById("urls")
+            body.classList.toggle("darktheme")
+            text.classList.toggle("darktheme")
+        }
+
+        function toggle_slider() {
+            sliders = document.getElementsByClassName("slider")
+            if (sliderShowed){
+                for (var slid of sliders) {
+                    slid.style.display = "none"
+            }}
+            else {
+                for (var slid of sliders) {
+                    slid.style.display = "block"
+            }}
+            sliderShowed = !sliderShowed
+        }
+        function toggle_livechat() {
+            chats_html = document.getElementsByClassName("livechatiframe")
+            if (chatShowed){
+                for (var chat of chats_html) {
+                    chat.style.display = "none"
+            }}
+            else {
+                for (var chat of chats_html) {
+                    chat.style.display = "block"
+            }}
+            chatShowed = !chatShowed
+        }
+        function toggle_aspect_ratio_lock() {
+            aspectRatioLocked = !aspectRatioLocked;
+        }
+
+        function setSelectedPlayer(id) {
+            uid_t = id.split("slider")[1]
+            hid = "player" + uid_t
+            selectedPlayerHTML = document.getElementById(hid);
+            selectedPlayer = getPlayer(uid_t)
+        }
+
+        function setWidth(ele) {
+            w = ele.value
+            h = selectedPlayerHTML.height
+            if (aspectRatioLocked) {
+                h = w * 9.0 / 16
+                ele.parentNode.childNodes[1].value = h  //1st child => width, 2nd child => height
+            }
+            selectedPlayer.setSize(w, h)
+            lastHeight = h
+            lastWidth = w
+        }
+
+        function setHeight(ele) {
+            w = selectedPlayerHTML.width
+            h = ele.value
+            if (aspectRatioLocked) {
+                w = h * 16.0 / 9
+                ele.parentNode.childNodes[0].value = w  //1st child => width, 2nd child => height
+            }
+            selectedPlayer.setSize(w, h)
+            lastHeight = h
+            lastWidth = w
+        }
+
+        function setUniformSize() {
+            for(var tup of containers) {
+                tup.ply.setSize(lastWidth, lastHeight)
+                uid_t = tup.uid
+                w_slid_html = document.getElementById("w_slider" + uid_t)
+                h_slid_html = document.getElementById("h_slider" + uid_t)
+                w_slid_html.value = lastWidth
+                h_slid_html.value = lastHeight
+            }
+        }
+
+
+        document.addEventListener('keydown', function(event) {
+            if(event.key == 'm' || event.key == 'M') {
+                toggle_mute_all();
+            }
+            else if(event.key == 'p' || event.key == 'P' || event.key == ' ') {
+                toggle_play_all();
+            }
+            else if(event.key == 'h' || event.key == 'H') {
+                toggle_url_area();
+            }
+            else if(event.key == 'd' || event.key == 'D') {
+                toggle_dark_theme();
+            }
+            else if(event.key == 's' || event.key == 'S') {
+                toggle_slider();
+            }
+            else if(event.key == 'l' || event.key == 'L') {
+                toggle_aspect_ratio_lock();
+            }
+            else if(event.key == 'k' || event.key == 'K') {
+                setUniformSize();
+            }
+            else if(event.key == 'c' || event.key == 'C') {
+                toggle_livechat();
+            }
+        });
+
+        function ReloadURLs()  {
+            urls_t = localStorage.getItem("urls") || "";
+            document.getElementById("urls").value = urls_t;
+            parse();
+        };
+        toggle_dark_theme()
+
+    </script>
+  </body>
+</html>
