@@ -5,7 +5,7 @@ Page Layout<br>
 ![layout](sample.PNG)
 
 ## LINK:<br>
-<a href="https://kkchengaf.github.io/Multi-embedded-youtube-player/">Multiple Embedded Youtube Player</a>
+<a href="https://kkchengaf.github.io/Multiple-Embedded-Youtube-Player/" alt="link to video player website">Multiple Embedded Youtube Player</a>
 
 ## HOW TO USE:
 Paste a valid youtube link in the text box to load a video<br>
