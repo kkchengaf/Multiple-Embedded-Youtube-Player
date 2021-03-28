@@ -22,6 +22,7 @@ You can toggle all livechat by pressing "C"
 
 ### Layout
 You can switch between dark theme and light theme by pressing "D"<br>
+You can switch the live chat dark theme by pressing "N"<br>
 You can adjust the width and height of a video player using the sliders under the video, which can be toggled by pressing "S"<br>
 By default, the aspect ratio of the video player is locked (16:9), you can unlock/lock by pressing "L"<br>
 You can adjust the size of text box, or hide the text box by pressing "H"<br>
@@ -29,13 +30,14 @@ You can adjust the size of all video players to be the same by pressing "K"<br>
 
 
 ## HOTKEYS:<br>
+P/SPACE - play/pause all videos<br>
 M - mute/unmute all videos<br>
-P - play/pause all videos<br>
 H - hide/show the text box<br>
 S - hide/show the size adjusting sliders<br>
 D - toggle dark theme/normal theme<br>
 L - lock aspect ratio to 16:9 when resizing<br>
 K - set all videos size to the one previously set<br>
 C - toggle livechat<br>
+N - toggle livechat dark theme<br>
 When the hotkey is not working, it is probably because your cursor is focusing on the videos. <br>
 Please click outside the videos to leave the focus and retry again. <br>
