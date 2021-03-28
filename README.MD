@@ -1,4 +1,4 @@
-# Multi-embedded-youtube-player
+# Multiple-Embedded-Youtube-Player
 Playing multiple YouTube videos at the same time. Watching multiple livestreams with live chat support.
 Page Layout<br>
 
