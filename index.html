@@ -12,6 +12,9 @@
         body.darktheme {
            background-color: #282c34;
         }
+        br {
+          user-select: none;
+        }
         textarea {
             margin-left: 20px;
             padding: 20px 8px 20px 10px;
@@ -82,17 +85,174 @@
             background: #fb8c64;
             cursor: pointer;
         }
+        .sidepanel {
+          height: 844px;
+          width: 400px;
+          position: fixed;
+          border-radius: 13px 0 0 13px;
+          box-shadow: 0 0 4px #8290bb;
+          z-index: 1;
+          top: 0;
+          right: 0;
+          background-color: #ebebf2;
+          color: #282ae5;
+          transition: background-color 1s linear, color 1s linear, width 1s, height 1s linear 1s;
+          overflow-y: hidden;
+          overflow-x: hidden;
+          white-space: nowrap;
+        }
+        .sidepanel.darktheme {
+          background-color: #41435a;
+          box-shadow: 0 0 4px #c7c3ea;
+          color: #bbdbee;
+        }
 
+        .sidepanel.keyonly {
+          width: 100px;
+        }
+        .sidepanel.hide {
+          width: 20px;
+          height: 100%;
+        }
+        .sidepanel.hide span {
+          display: none;
+        }
+        .sidepanel.hide .sidepaneldiv{
+          margin-left: 25px;
+        }
+
+        .sidepanel.keyonly span {
+          display: none;
+        }
+        .sidepanelbar {
+          position: fixed;
+          border-radius: 13px 0 0 13px;
+          float:left;
+          width: 0px;
+          height: 844px;
+          transition: width 1s, height 1s linear 1s;
+        }
+
+        .sidepanel.hide .sidepanelbar {
+          background-color: #b7dfe3;
+          height: 100%;
+          width: 25px;
+          transition: all 0.3s, background-color 1s linear 1s, height 1s linear 1s;
+        }
+        .sidepanel.hide .sidepanelbar.darktheme {
+          background-color: #41435a;
+          height: 100%;
+          width: 25px;
+          transition: all 0.3s, background-color 1s linear 1s, height 1s linear 1s;
+        }
+
+        .sidepanel.hide .sidepanelbar:hover{
+          background-color: #16d6e3;
+          transition: background-color 0.3s, height 1s linear 1s;
+        }
+        .sidepanel.hide .sidepanelbar:active{
+          background-color: #166d9a;
+          transition: background-color 0.3s, height 1s linear 1s;
+        }
+
+        .sidepanel.hide .sidepanelbar.darktheme:hover{
+          background-color: #606c7f;
+          transition: background-color 0.3s, height 1s linear 1s;
+        }
+        .sidepanel.hide .sidepanelbar.darktheme:active{
+          background-color: #333141;
+          transition: background-color 0.3s, height 1s linear 1s;
+        }
+
+        .keybtn {
+          margin: 0 0 13px 25px;
+          border-radius: 10px;
+          border:none;
+          outline: none;
+          height: 60px;
+          width: 60px;
+          background-color: #b2dcf2;
+          color: #2c2c30;
+          opacity: 0.8;
+          font-size: 30px;
+          box-shadow: 0 0 4px #c7c3ea;
+          transition: all 0.3s;
+          user-select: none;
+        }
+
+        .keybtn:hover {
+            opacity: 1;
+            box-shadow: 0 0 12px #c7c3ea;
+        }
+        .keybtn:active {
+            opacity: 0.5;
+            box-shadow: 0 0 8px #c7c3ea;
+        }
+        .btndes {
+            margin-left: 15px;
+            font-size: 20px;
+            user-select: none;
+        }
+        .sidepaneldiv {
+            height: 40px;
+            border-radius: 10px;
+            width: auto;
+            background-color: #67727f;
+            opacity: 0.7;
+            text-align: center;
+            padding-top: 8px;
+            transition: 0.3s;
+            box-shadow: 0 0 4px #c7c3ea;
+        }
+        .sidepaneldiv:hover {
+            opacity: 1;
+            box-shadow: 0 0 12px #c7c3ea;
+        }
+        .sidepaneldiv:active {
+            opacity: 0.5;
+            box-shadow: 0 0 8px #c7c3ea;
+        }
+        .sidepaneldes {
+            font-size: 30px;
+            color: #a4effc;
+            opacity: 1;
+            user-select: none;
+        }
+        .mode {
+            text-decoration: line-through;
+        }
+        .mode.on {
+            text-decoration: none;
+            font-style: italic;
+            font-weight: bolder;
+        }
 
     </style>
     <title>Multiple Embedded Youtube Player</title>
   </head>
 
-  <body id="body" onload="ReloadURLs();">
+  <body id="body" onload="RestoreState();"  class="darktheme">
+    <div id="sidepan" class="sidepanel darktheme hide">
+    <div id="sidepanbar" class="sidepanelbar darktheme" onclick="toggle_side_panel()"></div>
+    <div class="sidepaneldiv" onclick="toggle_side_panel_key_only()"><span class="sidepaneldes">Key Only</span></div><br>
+    <button class="keybtn" onclick="toggle_play_all()">P</button><span id="playdes" class="btndes"><span class="mode on">Play</span>/<span class="mode">Pause</span> all videos</span><br>
+    <button class="keybtn" onclick="toggle_mute_all()">M</button><span id="mutedes" class="btndes"><span class="mode on">Mute</span>/<span class="mode">Unmute</span> all videos</span><br>
+    <button class="keybtn" onclick="toggle_url_area()">H</button><span id="textareades" class="btndes"><span class="mode on">Hide</span>/<span class="mode">Show</span> text box</span><br>
+    <button class="keybtn" onclick="toggle_slider()">S</button><span id="sliderdes" class="btndes"><span class="mode">Hide</span>/<span class="mode on">Show</span> resize Sliders</span><br>
+    <button class="keybtn" onclick="toggle_dark_theme()">D</button><span id="darkdes" class="btndes"><span class="mode on">Disable</span>/<span class="mode">Enable</span> Dark theme</span><br>
+    <button class="keybtn" onclick="toggle_aspect_ratio_lock()">L</button><span id="aspectratiodes" class="btndes"><span class="mode on">Unlock</span>/<span class="mode">Lock</span> resize aspect ratio</span><br>
+    <button class="keybtn" onclick="setUniformSize()">K</button><span id="setsizedes" class="btndes"><span class="mode on">Set</span> all videos same size</span><br>
+    <button class="keybtn" onclick="toggle_livechat()">C</button><span id="chatdes" class="btndes"><span class="mode">Hide</span>/<span class="mode on">Show</span> live Chat</span><br>
+    <button class="keybtn" onclick="toggle_livechat_dark_theme()">N</button><span id="chatdarkdes" class="btndes"><span class="mode">Disable</span>/<span class="mode on">Enable</span> live chat dark theme</span><br>
+    <button class="keybtn" onclick="toggle_side_panel()">T</button><span id="sidepandes" class="btndes"><span class="mode on">Collapse</span>/<span class="mode">Expand</span> This Panel</span><br>
+    <div class="sidepaneldiv" onclick="window.open('https://github.com/kkchengaf/Multiple-Embedded-Youtube-Player')">
+      <span class="sidepaneldes">Github @kkchengaf</span></div>
+    </div>
+
     <div id="videoarea" style="flex-wrap: wrap;display:flex;">
     </div>
     <br>
-    <textarea id="urls" rows="5" cols="50"  style="font-size:30px" oninput="parse()"
+    <textarea id="urls" class="darktheme" rows="5" cols="50"  style="font-size:30px" oninput="parse()"
               placeholder="Paste Youtube Video Links here&#10;https://www.youtube.com/watch?v=..."></textarea>
     <div id="sliderarea"> </div>
     <script >
@@ -111,12 +271,13 @@
       var spliderarea = document.getElementById("sliderarea")
       var selectedPlayer = null;
       var selectedPlayerHTML = null;
+
       function parse() {
           var urls = document.getElementById("urls").value.split("\n");
           urls = urls.map(url=> (url.split("&")[0]))  //remove all tags after vid
           urls = urls.filter((v,i, arr)=> arr.findIndex((v2) => v2===v)===i)
           document.getElementById("urls").value = urls.join("\n")
-          localStorage.setItem("urls", document.getElementById("urls").value)
+          saveURLS()
           videoids = urls.map(url=> (url.split("v=")[1]))
           videoids = videoids.filter(url => url != null)
           onYouTubeIframeAPIReady()
@@ -153,7 +314,7 @@
           else
             h_slid_html.style.display = "none"
           w_slid_html = h_slid_html.cloneNode()
-          w_slid_html.setAttribute("max", "1885")
+          w_slid_html.setAttribute("max", "1875")
           w_slid_html.setAttribute("value", "625")
           w_slid_html.setAttribute("id", "w_slider" + uid_t)
           h_slid_html.setAttribute("max", "948")
@@ -246,6 +407,13 @@
           }
         }
 
+        function toggle_text_mode(selector) {
+            htmls = document.querySelectorAll(selector)
+            for (html of htmls) {
+                html.classList.toggle("on")
+            }
+        }
+
         function toggle_mute_all() {
             containers.forEach((item, i) => {
                 if (muted)
@@ -253,6 +421,7 @@
                 else
                   item.ply.mute()
             });
+            toggle_text_mode("#mutedes .mode")
             muted = !muted;
         }
 
@@ -263,20 +432,24 @@
                 else
                   item.ply.playVideo()
             });
+            toggle_text_mode("#playdes .mode")
             played = !played;
         }
 
         function toggle_url_area() {
             u = document.getElementById("urls")
             u.classList.toggle('hide')
+            toggle_text_mode("#textareades .mode")
         }
 
         function toggle_dark_theme() {
-            var body = document.getElementById("body")
-            var text = document.getElementById("urls")
-            body.classList.toggle("darktheme")
-            text.classList.toggle("darktheme")
+            for (id of ["body", "urls", "sidepan", "sidepanbar"]) {
+                html = document.getElementById(id);
+                html.classList.toggle("darktheme")
+            }
+            toggle_text_mode("#darkdes .mode")
         }
+
         function toggle_livechat_dark_theme() {
             chats_html = document.getElementsByClassName("livechatiframe")
             if (darked){
@@ -287,6 +460,7 @@
                 for (var chat of chats_html) {
                     chat.src = chat.src.replace("dark_theme=0", "dark_theme=1")
             }}
+            toggle_text_mode("#chatdarkdes .mode")
             darked = !darked
         }
 
@@ -300,6 +474,7 @@
                 for (var slid of sliders) {
                     slid.style.display = "block"
             }}
+            toggle_text_mode("#sliderdes .mode")
             sliderShowed = !sliderShowed
         }
         function toggle_livechat() {
@@ -312,9 +487,11 @@
                 for (var chat of chats_html) {
                     chat.style.display = "block"
             }}
+            toggle_text_mode("#chatdes .mode")
             chatShowed = !chatShowed
         }
         function toggle_aspect_ratio_lock() {
+            toggle_text_mode("#aspectratiodes .mode")
             aspectRatioLocked = !aspectRatioLocked;
         }
 
@@ -359,7 +536,15 @@
                 h_slid_html.value = lastHeight
             }
         }
+        function toggle_side_panel() {
+            document.getElementById("sidepan").classList.toggle("hide");
+            saveSidePanelState();
+        }
 
+        function toggle_side_panel_key_only() {
+            document.getElementById("sidepan").classList.toggle("keyonly");
+            saveSidePanelState();
+        }
 
         document.addEventListener('keydown', function(event) {
             if(event.key == 'm' || event.key == 'M') {
@@ -389,6 +574,9 @@
             else if(event.key == 'n' || event.key == 'N') {
                 toggle_livechat_dark_theme();
             }
+            else if(event.key == 't' || event.key == 'T') {
+                toggle_side_panel();
+            }
         });
 
         function ReloadURLs()  {
@@ -396,8 +584,28 @@
             document.getElementById("urls").value = urls_t;
             parse();
         };
-        toggle_dark_theme()
+
+        function ReloadSidePanelState() {
+            panel_state = localStorage.getItem("sidepan") || "sidepanel darktheme";
+            sidepan = document.getElementById("sidepan");
+            sidepan
+            sidepan.setAttribute("class", panel_state);
+        }
+
+        function saveURLS() {
+            localStorage.setItem("urls", document.getElementById("urls").value)
+        }
+
+        function saveSidePanelState() {
+            localStorage.setItem("sidepan", document.getElementById("sidepan").className)
+        }
+
+        function RestoreState() {
+            ReloadSidePanelState()
+            ReloadURLs();
+        }
 
     </script>
+
   </body>
 </html>
