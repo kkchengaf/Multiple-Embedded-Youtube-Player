@@ -1,11 +1,11 @@
 # Multi-embedded-youtube-player
-Playing multiple YouTube videos in same page, with live chat
+Playing multiple YouTube videos at the same time. Watching multiple livestreams with live chat support.
 Page Layout<br>
 
 ![layout](sample.PNG)
 
 ## LINK:<br>
-https://kkchengaf.github.io/Multi-embedded-youtube-player/
+<a href="https://kkchengaf.github.io/Multi-embedded-youtube-player/">Multiple Embedded Youtube Player</a>
 
 ## HOW TO USE:
 Paste a valid youtube link in the text box to load a video<br>
