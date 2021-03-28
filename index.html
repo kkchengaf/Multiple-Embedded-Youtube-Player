@@ -6,7 +6,7 @@
     <meta name="google-site-verification" content="aGqaF2FqE0Z8Vl8z9-x4_QSSrOARrvSJsTggaoFUV_8" />
     <style>
         body {
-            background-color: white;
+            background-color: #f8f8f8;
             transition: background-color 1s linear;
         }
         body.darktheme {
@@ -101,6 +101,7 @@
       var uid = 0;
       var muted = false;
       var played = false;
+      var darked = false;
       var sliderShowed = false;
       var chatShowed = false;
       var aspectRatioLocked = true
@@ -175,7 +176,8 @@
           vid_html.id = 'player' + uid;
           chat_html = document.createElement("iframe");
           chat_html.referrerPolicy = "origin";
-          chat_html.src = "https://www.youtube.com/live_chat?v=" + vid + "&embed_domain=kkchengaf.github.io"
+          dark_theme_tag = "&dark_theme=" + (darked?1:0)
+          chat_html.src = "https://www.youtube.com/live_chat?v=" + vid + "&embed_domain=kkchengaf.github.io" + dark_theme_tag
           chat_html.frameBorder = "0";
           chat_html.setAttribute("class", "livechatiframe")
           if (chatShowed)
@@ -275,6 +277,18 @@
             body.classList.toggle("darktheme")
             text.classList.toggle("darktheme")
         }
+        function toggle_livechat_dark_theme() {
+            chats_html = document.getElementsByClassName("livechatiframe")
+            if (darked){
+                for (var chat of chats_html) {
+                    chat.src = chat.src.replace("dark_theme=1", "dark_theme=0")
+            }}
+            else {
+                for (var chat of chats_html) {
+                    chat.src = chat.src.replace("dark_theme=0", "dark_theme=1")
+            }}
+            darked = !darked
+        }
 
         function toggle_slider() {
             sliders = document.getElementsByClassName("slider")
@@ -371,6 +385,9 @@
             }
             else if(event.key == 'c' || event.key == 'C') {
                 toggle_livechat();
+            }
+            else if(event.key == 'n' || event.key == 'N') {
+                toggle_livechat_dark_theme();
             }
         });
 
