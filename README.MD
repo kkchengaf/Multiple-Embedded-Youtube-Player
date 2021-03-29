@@ -39,5 +39,6 @@ L - lock aspect ratio to 16:9 when resizing<br>
 K - set all videos size to the one previously set<br>
 C - toggle livechat<br>
 N - toggle livechat dark theme<br>
+T - toggle side menu<br>
 When the hotkey is not working, it is probably because your cursor is focusing on the videos. <br>
 Please click outside the videos to leave the focus and retry again. <br>
