@@ -591,8 +591,8 @@
         function ReloadSidePanelState() {
             panel_state = localStorage.getItem("sidepan") || "sidepanel darktheme";
             sidepan = document.getElementById("sidepan");
-            sidepan
             sidepan.setAttribute("class", panel_state);
+            sidepan.classList.add("darktheme")
         }
 
         function saveURLS() {
