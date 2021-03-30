@@ -30,7 +30,8 @@
             opacity: : 1;
             transition: color 1.3s, background-color 1.3s,
                         box-shadow 0.3s,
-                        visibility 0.5s, opacity 0.5s linear;
+                        visibility 0.5s, opacity 0.5s 0s, height 0s 0s;
+            animation:
          }
          textarea::placeholder {
            color: #282ae5;
@@ -45,8 +46,10 @@
            opacity: 0.4;
          }
          textarea.hide {
-           visibility: hidden;
+           overflow: hidden;
+           height: 0;
            opacity: 0;
+           transition: height 0s 0.5s, opacity 0.5s 0s;
          }
 
         textarea:hover {
