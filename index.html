@@ -342,6 +342,7 @@
           chat_html.referrerPolicy = "origin";
           dark_theme_tag = "&dark_theme=" + (darked?1:0)
           chat_html.src = "https://www.youtube.com/live_chat?v=" + vid + "&embed_domain=kkchengaf.github.io" + dark_theme_tag
+          chat_html.bksrc = "https://www.youtube.com/live_chat?v=" + vid + "&embed_domain=kkchengaf.github.io" + dark_theme_tag
           chat_html.frameBorder = "0";
           chat_html.setAttribute("class", "livechatiframe")
           if (chatShowed)
@@ -485,10 +486,12 @@
             if (chatShowed){
                 for (var chat of chats_html) {
                     chat.style.display = "none"
+                    chat.src = ""
             }}
             else {
                 for (var chat of chats_html) {
                     chat.style.display = "block"
+                    chat.src = chat.bksrc
             }}
             toggle_text_mode("#chatdes .mode")
             chatShowed = !chatShowed
