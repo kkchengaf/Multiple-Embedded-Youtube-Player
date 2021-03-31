@@ -318,10 +318,10 @@
             h_slid_html.style.display = "none"
           w_slid_html = h_slid_html.cloneNode()
           w_slid_html.setAttribute("max", "1875")
-          w_slid_html.setAttribute("value", "625")
+          w_slid_html.setAttribute("value", lastWidth)
           w_slid_html.setAttribute("id", "w_slider" + uid_t)
           h_slid_html.setAttribute("max", "948")
-          h_slid_html.setAttribute("value", "450")
+          h_slid_html.setAttribute("value", lastHeight)
           h_slid_html.setAttribute("id", "h_slider" + uid_t)
           h_slid_html.setAttribute("oninput", "setHeight(this)");
           w_slid_html.setAttribute("oninput", "setWidth(this)");
@@ -364,8 +364,8 @@
               videoarea.appendChild(top_sec_html);
 
           player = new YT.Player(vid_html.id, {
-                  height: '450',
-                  width: '625',
+                  height: lastHeight,
+                  width: lastWidth,
                   videoId: vid
                   });
           return {vid:vid, ply:player, uid:uid++}
@@ -515,6 +515,7 @@
             selectedPlayer.setSize(w, h)
             lastHeight = h
             lastWidth = w
+            saveSie()
         }
 
         function setHeight(ele) {
@@ -527,6 +528,7 @@
             selectedPlayer.setSize(w, h)
             lastHeight = h
             lastWidth = w
+            saveSie()
         }
 
         function setUniformSize() {
@@ -595,6 +597,12 @@
             sidepan.classList.add("darktheme")
         }
 
+        function ReloadSize() {
+            lastWidth = localStorage.getItem("width") || 625;
+            lastHeight = localStorage.getItem("height") || 450;
+            setUniformSize();
+        }
+
         function saveURLS() {
             localStorage.setItem("urls", document.getElementById("urls").value)
         }
@@ -603,9 +611,15 @@
             localStorage.setItem("sidepan", document.getElementById("sidepan").className)
         }
 
+        function saveSie() {
+            localStorage.setItem("width", lastWidth)
+            localStorage.setItem("height", lastHeight)
+        }
+
         function RestoreState() {
             ReloadSidePanelState()
             ReloadURLs();
+            ReloadSize();
         }
 
     </script>
