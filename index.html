@@ -459,10 +459,12 @@
             if (darked){
                 for (var chat of chats_html) {
                     chat.src = chat.src.replace("dark_theme=1", "dark_theme=0")
+                    chat.bksrc = chat.bksrc.replace("dark_theme=1", "dark_theme=0")
             }}
             else {
                 for (var chat of chats_html) {
                     chat.src = chat.src.replace("dark_theme=0", "dark_theme=1")
+                    chat.bksrc = chat.bksrc.replace("dark_theme=0", "dark_theme=1")
             }}
             toggle_text_mode("#chatdarkdes .mode")
             darked = !darked
