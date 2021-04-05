@@ -271,6 +271,7 @@
       var aspectRatioLocked = true
       var lastHeight = 450;
       var lastWidth = 625
+      var urlsarea = document.getElementById("urls")
       var videoarea = document.getElementById("videoarea")
       var spliderarea = document.getElementById("sliderarea")
       var selectedPlayer = null;
@@ -558,6 +559,9 @@
         }
 
         document.addEventListener('keydown', function(event) {
+            if (document.activeElement == urlsarea)
+              return
+
             if(event.key == 'm' || event.key == 'M') {
                 toggle_mute_all();
             }
