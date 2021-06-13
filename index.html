@@ -90,7 +90,7 @@
             cursor: pointer;
         }
         .sidepanel {
-          height: 844px;
+          height: 917px;
           width: 400px;
           position: fixed;
           border-radius: 13px 0 0 13px;
@@ -246,6 +246,7 @@
     <button class="keybtn" onclick="toggle_dark_theme()">D</button><span id="darkdes" class="btndes"><span class="mode on">Disable</span>/<span class="mode">Enable</span> Dark theme</span><br>
     <button class="keybtn" onclick="toggle_aspect_ratio_lock()">L</button><span id="aspectratiodes" class="btndes"><span class="mode on">Unlock</span>/<span class="mode">Lock</span> resize aspect ratio</span><br>
     <button class="keybtn" onclick="setUniformSize()">K</button><span id="setsizedes" class="btndes"><span class="mode on">Set</span> all videos same size</span><br>
+    <button class="keybtn" onclick="syncReplay()">R</button><span id="syncdes" class="btndes"><span class="mode on">Sync</span> all replay (delay)</span><br>
     <button class="keybtn" onclick="toggle_livechat()">C</button><span id="chatdes" class="btndes"><span class="mode">Hide</span>/<span class="mode on">Show</span> live Chat</span><br>
     <button class="keybtn" onclick="toggle_livechat_dark_theme()">N</button><span id="chatdarkdes" class="btndes"><span class="mode">Disable</span>/<span class="mode on">Enable</span> live chat dark theme</span><br>
     <button class="keybtn" onclick="toggle_side_panel()">T</button><span id="sidepandes" class="btndes"><span class="mode on">Collapse</span>/<span class="mode">Expand</span> This Panel</span><br>
@@ -259,9 +260,11 @@
     <textarea id="urls" class="darktheme" rows="5" cols="50"  style="font-size:30px" oninput="parse()"
               placeholder="Paste Youtube Video Links here&#10;https://www.youtube.com/watch?v=..."></textarea>
     <div id="sliderarea"> </div>
+    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
     <script >
       var videoids = [];    //a list of vid
-      var containers = [];  // a list of object, (vid, player, hid)
+      var containers = [];  // a list of object, (vid, player, hid, st)
+      var stmap = {}  //a map from vid to stream actual start time
       var uid = 0;
       var muted = false;
       var played = false;
@@ -276,6 +279,7 @@
       var spliderarea = document.getElementById("sliderarea")
       var selectedPlayer = null;
       var selectedPlayerHTML = null;
+      var lastModifiedPlayerVid = null;
 
       function parse() {
           var urls = document.getElementById("urls").value.split("\n");
@@ -292,6 +296,15 @@
       function getPlayer(uid_t) {
           for(var tup of containers) {
               if (tup.uid == uid_t) {
+                  return tup.ply;
+              }
+          }
+          return null
+      }
+
+      function getPlayerVid(vid_t) {
+          for(var tup of containers) {
+              if (tup.vid == vid_t) {
                   return tup.ply;
               }
           }
@@ -369,9 +382,20 @@
           player = new YT.Player(vid_html.id, {
                   height: lastHeight,
                   width: lastWidth,
-                  videoId: vid
-                  });
+                  videoId: vid,
+                  events: {
+                    'onStateChange': onPlayerStateChange
+                  }
+                });
           return {vid:vid, ply:player, uid:uid++}
+      }
+
+      function onPlayerStateChange(event) {
+          if (event.data == YT.PlayerState.PLAYING) {
+              updateSTMap()
+              vid = event.target.getVideoData()['video_id']
+              setLastModifiedPlayerVid(vid)
+          }
       }
 
       // 2. This code loads the IFrame Player API code asynchronously.
@@ -548,6 +572,41 @@
                 h_slid_html.value = lastHeight
             }
         }
+
+        function setLastModifiedPlayerVid(vid) {
+            lastModifiedPlayerVid = vid
+        }
+
+        function parseDateTime(dataObj) {
+            datetime = dataObj.items[0].liveStreamingDetails.actualStartTime;
+            return new Date(Date.parse(datetime)).getTime();
+        }
+
+        function getAPIKey() {
+            
+        }
+
+        function updateSTMap() {
+          api = "AIzaSyA6ydfunoEpd1YuJy3IvGOeemv2RhRI3-8"
+          videoids.forEach(vid => {
+              if(stmap[vid] === undefined) {
+                  $.getJSON('https://www.googleapis.com/youtube/v3/videos?id=' + vid + '&part=snippet,liveStreamingDetails&key=' + api, data => {
+                      streamDate = parseDateTime(data);
+                      stmap[vid] = streamDate
+                  })
+              }
+          });
+        }
+
+        function syncReplay() {
+          vid_src = lastModifiedPlayerVid
+          base_time = stmap[vid_src] + getPlayerVid(vid_src).getCurrentTime()*1000
+          containers.forEach(tup => {
+              time_t = base_time - stmap[tup.vid]
+              tup.ply.seekTo(time_t/1000)
+          });
+        }
+
         function toggle_side_panel() {
             document.getElementById("sidepan").classList.toggle("hide");
             saveSidePanelState();
@@ -591,6 +650,9 @@
             }
             else if(event.key == 't' || event.key == 'T') {
                 toggle_side_panel();
+            }
+            else if(event.key == 'r' || event.key == 'R') {
+                syncReplay();
             }
         });
 
