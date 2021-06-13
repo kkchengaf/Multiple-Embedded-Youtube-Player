@@ -19,6 +19,9 @@ DO NOT PLACE TOO MANY URLS AND PLAY ALL VIDEOS AT THE SAME TIME<br>
 ### Playing Video
 Presss "P" to play all the videos, "M" to mute all videos<br>
 You can toggle all livechat by pressing "C"
+### Syncing Livestream Replay
+Jump to the time in the progress bar in 1 video, then Presss "R" to sync all livestream replay<br>
+This may include delay.
 
 ### Layout
 You can switch between dark theme and light theme by pressing "D"<br>
@@ -37,6 +40,7 @@ S - hide/show the size adjusting sliders<br>
 D - toggle dark theme/normal theme<br>
 L - lock aspect ratio to 16:9 when resizing<br>
 K - set all videos size to the one previously set<br>
+R - Sync all the live stream replay time based on the last video jumped time <br>
 C - toggle livechat<br>
 N - toggle livechat dark theme<br>
 T - toggle side menu<br>
