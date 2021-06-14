@@ -1,0 +1,109 @@
+        .sidepanel {
+          height: 917px;
+          width: 400px;
+          position: fixed;
+          border-radius: 13px 0 0 13px;
+          box-shadow: 0 0 4px #8290bb;
+          z-index: 1;
+          top: 0;
+          right: 0;
+          background-color: #ebebf2;
+          color: #282ae5;
+          transition: background-color 1s linear, color 1s linear, width 1s, height 1s linear 1s;
+          overflow-y: hidden;
+          overflow-x: hidden;
+          white-space: nowrap;
+        }
+        .sidepanel.darktheme {
+          background-color: #41435a;
+          box-shadow: 0 0 4px #c7c3ea;
+          color: #bbdbee;
+        }
+
+        .sidepanel.keyonly {
+          width: 100px;
+        }
+        .sidepanel.hide {
+          width: 20px;
+          height: 100%;
+        }
+        .sidepanel.hide span {
+          display: none;
+        }
+        .sidepanel.hide .sidepaneldiv{
+          margin-left: 25px;
+        }
+
+        .sidepanel.keyonly span {
+          display: none;
+        }
+        .sidepanelbar {
+          position: fixed;
+          border-radius: 13px 0 0 13px;
+          float:left;
+          width: 0px;
+          height: 844px;
+          transition: width 1s, height 1s linear 1s;
+        }
+
+        .sidepanel.hide .sidepanelbar {
+          background-color: #b7dfe3;
+          height: 100%;
+          width: 25px;
+          transition: all 0.3s, background-color 1s linear 1s, height 1s linear 1s;
+        }
+        .sidepanel.hide .sidepanelbar.darktheme {
+          background-color: #41435a;
+          height: 100%;
+          width: 25px;
+          transition: all 0.3s, background-color 1s linear 1s, height 1s linear 1s;
+        }
+
+        .sidepanel.hide .sidepanelbar:hover{
+          background-color: #16d6e3;
+          transition: background-color 0.3s, height 1s linear 1s;
+        }
+        .sidepanel.hide .sidepanelbar:active{
+          background-color: #166d9a;
+          transition: background-color 0.3s, height 1s linear 1s;
+        }
+
+        .sidepanel.hide .sidepanelbar.darktheme:hover{
+          background-color: #606c7f;
+          transition: background-color 0.3s, height 1s linear 1s;
+        }
+        .sidepanel.hide .sidepanelbar.darktheme:active{
+          background-color: #333141;
+          transition: background-color 0.3s, height 1s linear 1s;
+        }
+
+        .btndes {
+            margin-left: 15px;
+            font-size: 20px;
+            user-select: none;
+        }
+        .sidepaneldiv {
+            height: 40px;
+            border-radius: 10px;
+            width: auto;
+            background-color: #67727f;
+            opacity: 0.7;
+            text-align: center;
+            padding-top: 8px;
+            transition: 0.3s;
+            box-shadow: 0 0 4px #c7c3ea;
+        }
+        .sidepaneldiv:hover {
+            opacity: 1;
+            box-shadow: 0 0 12px #c7c3ea;
+        }
+        .sidepaneldiv:active {
+            opacity: 0.5;
+            box-shadow: 0 0 8px #c7c3ea;
+        }
+        .sidepaneldes {
+            font-size: 30px;
+            color: #a4effc;
+            opacity: 1;
+            user-select: none;
+        }

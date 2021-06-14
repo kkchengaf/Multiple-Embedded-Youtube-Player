@@ -1,0 +1,49 @@
+          textarea {
+            margin-left: 20px;
+            padding: 20px 8px 20px 10px;
+            border-radius: 25px;
+            border:none;
+            outline: none;
+            box-shadow: 0 0 4px #9292ac;
+            width: 820px;
+            height: 180px;
+            background-color: powderblue;
+            color: #282ae5;
+            visibility: visible;
+            opacity: : 1;
+            transition: color 1.3s, background-color 1.3s,
+                        box-shadow 0.3s,
+                        visibility 0.5s, opacity 0.5s 0s, height 0s 0s;
+            animation:
+         }
+         textarea::placeholder {
+           color: #282ae5;
+           opacity: 0.7;
+         }
+         textarea.darktheme {
+           background-color: #3d3f5a;
+           color: #99dafe;
+         }
+         textarea.darktheme::placeholder {
+           color: #99dafe;
+           opacity: 0.4;
+         }
+         textarea.hide {
+           pointer-events: none;
+           overflow: hidden;
+           height: 0;
+           opacity: 0;
+           transition: height 0s 0.5s, opacity 0.5s 0s;
+         }
+
+        textarea:hover {
+             box-shadow: 0 0 15px #8290bb;
+         }
+
+        textarea:focus {
+            box-shadow: 0 0 30px #929ee4;
+        }
+
+        textarea::selection  {
+            background: #b3b6b5;
+        }

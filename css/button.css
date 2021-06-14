@@ -1,0 +1,24 @@
+        .keybtn {
+          margin: 0 0 13px 25px;
+          border-radius: 10px;
+          border:none;
+          outline: none;
+          height: 60px;
+          width: 60px;
+          background-color: #b2dcf2;
+          color: #2c2c30;
+          opacity: 0.8;
+          font-size: 30px;
+          box-shadow: 0 0 4px #c7c3ea;
+          transition: all 0.3s;
+          user-select: none;
+        }
+
+        .keybtn:hover {
+            opacity: 1;
+            box-shadow: 0 0 12px #c7c3ea;
+        }
+        .keybtn:active {
+            opacity: 0.5;
+            box-shadow: 0 0 8px #c7c3ea;
+        }
