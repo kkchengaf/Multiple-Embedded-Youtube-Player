@@ -22,6 +22,33 @@
           return slid_div
       }
 
+      // Add volume control slider for each player
+      function addVolumeControl(uid_t) {
+          vol_div = document.createElement('div');
+          vol_div.setAttribute("class", "volume-container");
+          vol_div.setAttribute("id", "vol_container" + uid_t);
+          
+          // Volume icon (speaker symbol)
+          vol_icon = document.createElement('span');
+          vol_icon.setAttribute("class", "volume-icon");
+          vol_icon.innerHTML = '&#128266;'; // Speaker icon
+          
+          // Volume slider
+          vol_slider = document.createElement('input');
+          vol_slider.setAttribute("type", "range");
+          vol_slider.setAttribute("class", "volume-slider");
+          vol_slider.setAttribute("min", "0");
+          vol_slider.setAttribute("max", "100");
+          vol_slider.setAttribute("value", "100");
+          vol_slider.setAttribute("id", "vol_slider" + uid_t);
+          vol_slider.setAttribute("oninput", "setVolume(this)");
+          vol_slider.setAttribute("onmouseover", "setSelectedPlayer(this.id)");
+          
+          vol_div.appendChild(vol_icon);
+          vol_div.appendChild(vol_slider);
+          return vol_div;
+      }
+
       function addPlayer(vid, pos) {
           sec_html = document.createElement('div');
           sec_html.id = "sec_" + uid;
@@ -47,6 +74,10 @@
           top_sec_html.appendChild(sec_html)
           slid_html = addSlider(uid, pos)
           top_sec_html.appendChild(slid_html)
+          
+          // Add volume control below the video player
+          vol_html = addVolumeControl(uid);
+          top_sec_html.appendChild(vol_html);
 
           if (videoarea.children.length > 0 && pos != -1)
               videoarea.insertBefore(top_sec_html, videoarea.children[pos]);
@@ -58,8 +89,30 @@
                   width: lastWidth,
                   videoId: vid,
                   events: {
-                    'onStateChange': onPlayerStateChange
+                    'onStateChange': onPlayerStateChange,
+                    'onReady': onPlayerReady
                   }
                 });
           return {vid:vid, ply:player, uid:uid++}
+      }
+
+      // Callback when player is ready - initialize volume slider
+      function onPlayerReady(event) {
+          var player = event.target;
+          var uid_t = null;
+          
+          // Find the uid for this player by searching through containers
+          for (var i = 0; i < containers.length; i++) {
+              if (containers[i].ply === player) {
+                  uid_t = containers[i].uid;
+                  break;
+              }
+          }
+          
+          if (uid_t !== null) {
+              var volSlider = document.getElementById('vol_slider' + uid_t);
+              if (volSlider) {
+                  volSlider.value = player.getVolume();
+              }
+          }
       }

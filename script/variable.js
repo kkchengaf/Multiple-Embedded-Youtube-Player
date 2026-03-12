@@ -7,6 +7,7 @@
       var darked = false;
       var sliderShowed = false;
       var chatShowed = false;
+      var volumeBarShowed = true;  // Volume bar is shown by default
       var aspectRatioLocked = true
       var lastHeight = 450;
       var lastWidth = 625

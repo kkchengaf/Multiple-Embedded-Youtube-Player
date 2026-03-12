@@ -1,4 +1,27 @@
 
+      // Improved function to extract video ID from various YouTube URL formats
+      // Supports: youtu.be/VIDEOID, youtu.be/VIDEOID?si=..., youtube.com/watch?v=VIDEOID, youtube.com/embed/VIDEOID
+      function extractVideoId(url) {
+          if (!url) return null;
+          
+          // Remove protocol prefix if present
+          let cleanUrl = url.trim();
+          
+          // Handle youtu.be format: http://youtu.be/dQw4w9WgXcQ?si=UOIMSKOAGD
+          let youtuBeMatch = cleanUrl.match(/(?:youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/|youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/);
+          if (youtuBeMatch && youtuBeMatch[1]) {
+              return youtuBeMatch[1];
+          }
+          
+          // Alternative: check for youtu.be with path only
+          let shortUrlMatch = cleanUrl.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+          if (shortUrlMatch && shortUrlMatch[1]) {
+              return shortUrlMatch[1];
+          }
+          
+          return null;
+      }
+
       function parse() {
           var urls = document.getElementById("urls").value.split("\n");
 
@@ -7,7 +30,7 @@
 
           document.getElementById("urls").value = urls.join("\n")
           saveURLS()
-          videoids = urls.map(url => (url.split("v=")[1]))
+          videoids = urls.map(url => extractVideoId(url))
                          .filter(url => url != null)
           onYouTubeIframeAPIReady()
       }

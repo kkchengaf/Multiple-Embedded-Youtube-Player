@@ -71,6 +71,16 @@
             chatShowed = !chatShowed
         }
 
+        function toggleVolumeBar() {
+            display = toggleDisplayString(volumeBarShowed)
+            Array.from(document.getElementsByClassName("volume-container"))
+                 .forEach(ele => {
+                     ele.style.display = display
+                 })
+            toggleTextMode("#volbardes .mode")
+            volumeBarShowed = !volumeBarShowed
+        }
+
         function toggleAspectRatioLock() {
             toggleTextMode("#aspectratiodes .mode")
             aspectRatioLocked = !aspectRatioLocked;
@@ -78,9 +88,26 @@
 
         function setSelectedPlayer(id) {
             uid_t = id.split("slider")[1]
+            // Check if this is a volume slider
+            if (id.startsWith("vol_slider")) {
+                uid_t = id.split("vol_slider")[1]
+            }
+            if (!uid_t) return;
             hid = "player" + uid_t
             selectedPlayerHTML = document.getElementById(hid);
             selectedPlayer = getPlayer(uid_t)
+        }
+
+        // Set volume for a specific player
+        function setVolume(ele) {
+            var volume = ele.value;
+            var uid_t = ele.id.split("vol_slider")[1];
+            if (!uid_t) return;
+            
+            var player = getPlayer(uid_t);
+            if (player) {
+                player.setVolume(volume);
+            }
         }
 
         function setWidth(ele) {
@@ -154,6 +181,9 @@
             }
             else if(event.key == 's' || event.key == 'S') {
                 toggleSlider();
+            }
+            else if(event.key == 'v' || event.key == 'V') {
+                toggleVolumeBar();
             }
             else if(event.key == 'l' || event.key == 'L') {
                 toggleAspectRatioLock();

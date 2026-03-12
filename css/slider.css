@@ -23,3 +23,62 @@
             background: #fb8c64;
             cursor: pointer;
         }
+
+        /* Volume Control Styles */
+        .volume-container {
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+            padding: 5px;
+            background: #333;
+            border-radius: 5px;
+            width: fit-content;
+        }
+
+        /* Dark theme volume container */
+        body.darktheme .volume-container {
+            background: #1a1a1a;
+        }
+
+        .volume-icon {
+            font-size: 18px;
+            margin-right: 8px;
+            color: #fff;
+        }
+
+        .volume-slider {
+            -webkit-appearance: none;
+            width: 100px;
+            height: 6px;
+            border-radius: 3px;
+            background: #555;
+            outline: none;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+
+        body.darktheme .volume-slider {
+            background: #444;
+        }
+
+        .volume-slider:hover {
+            opacity: 1;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+            border: none;
+        }

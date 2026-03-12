@@ -1,5 +1,5 @@
         .sidepanel {
-          height: 917px;
+          height: 989px;
           width: 400px;
           position: fixed;
           border-radius: 13px 0 0 13px;
@@ -10,10 +10,17 @@
           background-color: #ebebf2;
           color: #282ae5;
           transition: background-color 1s linear, color 1s linear, width 1s, height 1s linear 1s;
-          overflow-y: hidden;
+          overflow-y: scroll;
+
           overflow-x: hidden;
           white-space: nowrap;
+          -ms-overflow-style: none;  /* IE and Edge */
+          scrollbar-width: none;  /* Firefox */
         }
+        .sidepanel::-webkit-scrollbar {
+          display: none;  /* Chrome, Safari, Opera */
+        }
+
         .sidepanel.darktheme {
           background-color: #41435a;
           box-shadow: 0 0 4px #c7c3ea;
